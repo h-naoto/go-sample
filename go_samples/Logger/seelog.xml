@@ -1,0 +1,18 @@
+<seelog minlevel="debug" maxlevel="error">
+	<!--Setting output target -->
+	<outputs formatid="json">
+		<!-- Output console -->
+		<console/>
+		<!-- Output file -->
+		<file path="out_json.log"/>
+		<splitter formatid="log">
+			<file path="out_log.log"/>
+		</splitter>
+  	</outputs>
+	
+	<!--Setting log output format -->
+	<formats>
+		<format id="json" format='{"DateTime":"%Time %Date" , "level":"%Level", "Func" : "%RelFile %Func" , "Msg" : "%Msg"} %n'/>
+		<format id="log" format='%Time %Date : %Level : %RelFile %Func : %Msg %n'/>
+	</formats>
+</seelog>

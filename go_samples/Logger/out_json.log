@@ -1,0 +1,8 @@
+{"DateTime":"16:00:12 2014-11-28" , "level":"Debug", "Func" : "log_train.go main.main" , "Msg" : "DebugLog"} 
+{"DateTime":"16:00:12 2014-11-28" , "level":"Info", "Func" : "log_train.go main.main" , "Msg" : "InfoLog"} 
+{"DateTime":"16:00:12 2014-11-28" , "level":"Warn", "Func" : "log_train.go main.main" , "Msg" : "WarnLog"} 
+{"DateTime":"16:00:12 2014-11-28" , "level":"Error", "Func" : "log_train.go main.main" , "Msg" : "ErrorLog"} 
+{"DateTime":"16:03:35 2014-11-28" , "level":"Debug", "Func" : "log_train.go main.main" , "Msg" : "DebugLog"} 
+{"DateTime":"16:03:35 2014-11-28" , "level":"Info", "Func" : "log_train.go main.main" , "Msg" : "InfoLog"} 
+{"DateTime":"16:03:35 2014-11-28" , "level":"Warn", "Func" : "log_train.go main.main" , "Msg" : "WarnLog"} 
+{"DateTime":"16:03:35 2014-11-28" , "level":"Error", "Func" : "log_train.go main.main" , "Msg" : "ErrorLog"} 
