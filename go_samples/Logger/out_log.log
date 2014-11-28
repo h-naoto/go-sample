@@ -2,3 +2,7 @@
 16:03:35 2014-11-28 : Info : log_train.go main.main : InfoLog 
 16:03:35 2014-11-28 : Warn : log_train.go main.main : WarnLog 
 16:03:35 2014-11-28 : Error : log_train.go main.main : ErrorLog 
+16:35:41 2014-11-28 : Debug : log_train.go main.main : DebugLog 
+16:35:41 2014-11-28 : Info : log_train.go main.main : InfoLog 
+16:35:41 2014-11-28 : Warn : log_train.go main.main : WarnLog 
+16:35:41 2014-11-28 : Error : log_train.go main.main : ErrorLog 
