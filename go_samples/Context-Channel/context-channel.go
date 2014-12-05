@@ -17,19 +17,28 @@ func main() {
 	cCmdR := make(chan string, 1)
 	cM = make(map[string]chan string)
 	cM["A"] = make(chan string, 1)
-	cM["Aa"] = make(chan string, 1)
-	cM["Ab"] = make(chan string, 1)
+	cM["A1"] = make(chan string, 1)
+	cM["A11"] = make(chan string, 1)
+	cM["A2"] = make(chan string, 1)
 	cM["B"] = make(chan string, 1)
-	cM["Ba"] = make(chan string, 1)
-	cM["Bb"] = make(chan string, 1)
+	cM["B1"] = make(chan string, 1)
+	cM["B2"] = make(chan string, 1)
+	ctxA, cancelA := context.WithCancel(context.Background())
+	ctxA1, cancelA1 := context.WithCancel(ctxA)
+	ctxA11, cancelA11 := context.WithCancel(ctxA1)
+	ctxA2, cancelA2 := context.WithCancel(ctxA)
+	ctxB, cancelB := context.WithCancel(context.Background())
+	ctxB1, cancelB1 := context.WithCancel(ctxB)
+	ctxB2, cancelB2 := context.WithCancel(ctxB)
 
 	go CommandUI(cCmd, cCmdR)
-	go A(cM["A"])
-	go Aa(cM["Aa"])
-	go Ab(cM["Ab"])
-	go B(cM["B"])
-	go Ba(cM["Ba"])
-	go Bb(cM["Bb"])
+	go A(cM["A"], ctxA)
+	go A1(cM["A1"], ctxA1)
+	go A11(cM["A11"], ctxA11)
+	go A2(cM["A2"], ctxA2)
+	go B(cM["B"], ctxB)
+	go B1(cM["B1"], ctxB1)
+	go B2(cM["B2"], ctxB2)
 
 	for {
 		for key, value := range cM {
@@ -44,32 +53,37 @@ func main() {
 		case "A":
 			_, ok := cM[output]
 			if ok {
-				close(cM["A"])
+				cancelA()
 			}
-		case "Aa":
+		case "A1":
 			_, ok := cM[output]
 			if ok {
-				close(cM["Aa"])
+				cancelA1()
 			}
-		case "Ab":
+		case "A11":
 			_, ok := cM[output]
 			if ok {
-				close(cM["Ab"])
+				cancelA11()
+			}
+		case "A2":
+			_, ok := cM[output]
+			if ok {
+				cancelA2()
 			}
 		case "B":
 			_, ok := cM[output]
 			if ok {
-				close(cM["B"])
+				cancelB()
 			}
-		case "Ba":
+		case "B1":
 			_, ok := cM[output]
 			if ok {
-				close(cM["Ba"])
+				cancelB1()
 			}
-		case "Bb":
+		case "B2":
 			_, ok := cM[output]
 			if ok {
-				close(cM["Bb"])
+				cancelB2()
 			}
 		case "exit":
 			fmt.Println("process finished !!!")
@@ -89,69 +103,94 @@ func CommandUI(cCmd, cCmdR chan string) {
 	}
 }
 
-func A(cA chan string) {
+func A(cA chan string, ctxA context.Context) {
 	for {
-		str, ok := <-cA
-		if ok {
-			fmt.Println(str)
-		} else {
+		select {
+		case <-ctxA.Done():
+			close(cM["A"])
 			delete(cM, "A")
 			return
+		default:
+			str, _ := <-cA
+			fmt.Println(str)
 		}
 	}
 }
-func Aa(cAa chan string) {
+func A1(cA1 chan string, ctxA1 context.Context) {
 	for {
-		str, ok := <-cAa
-		if ok {
-			fmt.Println(str)
-		} else {
-			delete(cM, "Aa")
+		select {
+		case <-ctxA1.Done():
+			close(cM["A1"])
+			delete(cM, "A1")
 			return
+		default:
+			str, _ := <-cA1
+			fmt.Println(str)
 		}
 	}
 }
-func Ab(cAb chan string) {
+func A11(A11 chan string, ctxA11 context.Context) {
 	for {
-		str, ok := <-cAb
-		if ok {
-			fmt.Println(str)
-		} else {
-			delete(cM, "Ab")
+		select {
+		case <-ctxA11.Done():
+			close(cM["A11"])
+			delete(cM, "A11")
 			return
+		default:
+			str, _ := <-A11
+			fmt.Println(str)
 		}
 	}
 }
-func B(cB chan string) {
+func A2(cA2 chan string, ctxA2 context.Context) {
 	for {
-		str, ok := <-cB
-		if ok {
+		select {
+		case <-ctxA2.Done():
+			close(cM["A2"])
+			delete(cM, "A2")
+			return
+		default:
+			str, _ := <-cA2
 			fmt.Println(str)
-		} else {
+		}
+	}
+}
+func B(cB chan string, ctxB context.Context) {
+	for {
+		select {
+		case <-ctxB.Done():
+			close(cM["B"])
 			delete(cM, "B")
 			return
+		default:
+			str, _ := <-cB
+			fmt.Println(str)
 		}
 	}
 }
-func Ba(cBa chan string) {
+func B1(cB1 chan string, ctxB1 context.Context) {
 	for {
-		str, ok := <-cBa
-		if ok {
-			fmt.Println(str)
-		} else {
-			delete(cM, "Ba")
+		select {
+		case <-ctxB1.Done():
+			close(cM["B1"])
+			delete(cM, "B1")
 			return
+		default:
+			str, _ := <-cB1
+			fmt.Println(str)
 		}
 	}
 }
-func Bb(cBb chan string) {
+func B2(cB2 chan string, ctxB2 context.Context) {
 	for {
-		str, ok := <-cBb
-		if ok {
-			fmt.Println(str)
-		} else {
-			delete(cM, "Bb")
+		select {
+		case <-ctxB2.Done():
+			close(cM["B2"])
+			delete(cM, "B2")
 			return
+		default:
+			str, _ := <-cB2
+			fmt.Println(str)
 		}
 	}
 }
