@@ -13,8 +13,6 @@ var cM map[string]chan string
 
 func main() {
 	// init channels
-	cCmd := make(chan string, 1)
-	cCmdR := make(chan string, 1)
 	cM = make(map[string]chan string)
 	cM["A"] = make(chan string, 1)
 	cM["A1"] = make(chan string, 1)
@@ -24,14 +22,19 @@ func main() {
 	cM["B1"] = make(chan string, 1)
 	cM["B2"] = make(chan string, 1)
 	ctxA, cancelA := context.WithCancel(context.Background())
+	ctxA = context.WithValue(ctxA, "keyA", "valA")
 	ctxA1, cancelA1 := context.WithCancel(ctxA)
+	ctxA1 = context.WithValue(ctxA1, "keyA1", "valA1")
 	ctxA11, cancelA11 := context.WithCancel(ctxA1)
+	ctxA11 = context.WithValue(ctxA11, "keyA11", "valA11")
 	ctxA2, cancelA2 := context.WithCancel(ctxA)
+	ctxA2 = context.WithValue(ctxA2, "keyA2", "valA2")
 	ctxB, cancelB := context.WithCancel(context.Background())
+	ctxB = context.WithValue(ctxB, "keyB", "valB")
 	ctxB1, cancelB1 := context.WithCancel(ctxB)
+	ctxB1 = context.WithValue(ctxB1, "keyB1", "valB1")
 	ctxB2, cancelB2 := context.WithCancel(ctxB)
-
-	go CommandUI(cCmd, cCmdR)
+	ctxB2 = context.WithValue(ctxB2, "keyB2", "valB2")
 	go A(cM["A"], ctxA)
 	go A1(cM["A1"], ctxA1)
 	go A11(cM["A11"], ctxA11)
@@ -46,9 +49,10 @@ func main() {
 			value <- str
 		}
 		time.Sleep(500 * time.Millisecond)
-		cCmdR <- "Next"
 		fmt.Println("# What process do stop")
-		output := <-cCmd
+		fmt.Print("> ")
+		sc.Scan()
+		output := sc.Text()
 		switch output {
 		case "A":
 			_, ok := cM[output]
@@ -89,17 +93,7 @@ func main() {
 			fmt.Println("process finished !!!")
 			os.Exit(0)
 		}
-		time.Sleep(500 * time.Millisecond)
-	}
-}
-
-func CommandUI(cCmd, cCmdR chan string) {
-	for {
-		<-cCmdR
-		fmt.Print("> ")
-		if sc.Scan() {
-			cCmd <- sc.Text()
-		}
+		//time.Sleep(1000 * time.Millisecond)
 	}
 }
 
@@ -109,10 +103,11 @@ func A(cA chan string, ctxA context.Context) {
 		case <-ctxA.Done():
 			close(cM["A"])
 			delete(cM, "A")
+			//fmt.Println("dead")
 			return
-		default:
-			str, _ := <-cA
-			fmt.Println(str)
+		case str, _ := <-cA:
+			str1 := ctxA.Value("keyA")
+			fmt.Println(str, str1)
 		}
 	}
 }
@@ -122,23 +117,25 @@ func A1(cA1 chan string, ctxA1 context.Context) {
 		case <-ctxA1.Done():
 			close(cM["A1"])
 			delete(cM, "A1")
+			//fmt.Println("dead")
 			return
-		default:
-			str, _ := <-cA1
-			fmt.Println(str)
+		case str, _ := <-cA1:
+			str1 := ctxA1.Value("keyA1")
+			fmt.Println(str, str1)
 		}
 	}
 }
-func A11(A11 chan string, ctxA11 context.Context) {
+func A11(cA11 chan string, ctxA11 context.Context) {
 	for {
 		select {
 		case <-ctxA11.Done():
 			close(cM["A11"])
 			delete(cM, "A11")
+			//fmt.Println("dead")
 			return
-		default:
-			str, _ := <-A11
-			fmt.Println(str)
+		case str, _ := <-cA11:
+			str1 := ctxA11.Value("keyA11")
+			fmt.Println(str, str1)
 		}
 	}
 }
@@ -148,10 +145,11 @@ func A2(cA2 chan string, ctxA2 context.Context) {
 		case <-ctxA2.Done():
 			close(cM["A2"])
 			delete(cM, "A2")
+			//fmt.Println("dead")
 			return
-		default:
-			str, _ := <-cA2
-			fmt.Println(str)
+		case str, _ := <-cA2:
+			str1 := ctxA2.Value("keyA2")
+			fmt.Println(str, str1)
 		}
 	}
 }
@@ -161,10 +159,11 @@ func B(cB chan string, ctxB context.Context) {
 		case <-ctxB.Done():
 			close(cM["B"])
 			delete(cM, "B")
+			//fmt.Println("dead")
 			return
-		default:
-			str, _ := <-cB
-			fmt.Println(str)
+		case str, _ := <-cB:
+			str1 := ctxB.Value("keyB")
+			fmt.Println(str, str1)
 		}
 	}
 }
@@ -174,10 +173,11 @@ func B1(cB1 chan string, ctxB1 context.Context) {
 		case <-ctxB1.Done():
 			close(cM["B1"])
 			delete(cM, "B1")
+			//fmt.Println("dead")
 			return
-		default:
-			str, _ := <-cB1
-			fmt.Println(str)
+		case str, _ := <-cB1:
+			str1 := ctxB1.Value("keyB1")
+			fmt.Println(str, str1)
 		}
 	}
 }
@@ -187,10 +187,11 @@ func B2(cB2 chan string, ctxB2 context.Context) {
 		case <-ctxB2.Done():
 			close(cM["B2"])
 			delete(cM, "B2")
+			//fmt.Println("dead")
 			return
-		default:
-			str, _ := <-cB2
-			fmt.Println(str)
+		case str, _ := <-cB2:
+			str1 := ctxB2.Value("keyB2")
+			fmt.Println(str, str1)
 		}
 	}
 }
